@@ -1,18 +1,50 @@
 
 
-def largest_range_no_sort(array):
+def largest_range_sorted(array):
+
+    bound = len(array)
+
+    if bound == 0:
+        return []
+    elif bound == 1:
+        return [array[0], array[0]]
+    else:
+        idx = 1
+        array.sort()
+        max_range = None
+
+        while idx < bound:
+            check = False
+            temp_range = [None, None]
+
+            while idx < bound and (array[idx] == array[idx - 1] + 1 or array[idx] == array[idx - 1]):
+                if temp_range[0] is None:
+                    temp_range[0] = idx - 1
+                    check = True
+                idx += 1
+            else:
+                if check is True:
+                    temp_range[1] = idx - 1
+                    if max_range is None or temp_range[1] - temp_range[0] > max_range[1] - max_range[0]:
+                        max_range = temp_range
+                idx += 1
+
+        return [array[max_range[0]], array[max_range[1]]] if max_range else []
+
+
+def largest_range(array):
     """
     Time O(n) | Space O(n)
     """
-    largest = None
-    data = {x: True for x in array}
+    max_range = None
+    data = {x: False for x in array}
 
     for d in array:
-        if data[d] is False:
+        if data[d] is True:
             continue
 
         low = high = d
-        data[d] = False
+        data[d] = True
 
         while low - 1 in data:
             low -= 1
@@ -22,42 +54,10 @@ def largest_range_no_sort(array):
             high += 1
             data[high] = False
 
-        if not largest or largest[1] - largest[0] < high - low:
-            largest = [low, high]
-    return largest
+        if max_range is None or max_range[1] - max_range[0] < high - low:
+            max_range = [low, high]
 
-
-def largest_range(array):
-    """
-    Time -> O(NLogN) | Space -> O(1)
-    """
-    bound = len(array)
-
-    if bound == 1:
-        return [array[0], ] * 2
-
-    idx = 1
-    array = sorted(array)
-    largest, temp_range = None, None
-
-    while idx < bound:
-        clear = False
-        if array[idx] - 1 == array[idx - 1]:
-            if not temp_range:
-                temp_range = [array[idx - 1], array[idx]]
-            else:
-                temp_range[1] = array[idx]
-
-            if (largest is None and temp_range) or all(
-                    (largest, temp_range, temp_range[1] - temp_range[0] > largest[1] - largest[0])):
-                largest = temp_range
-        elif array[idx] != array[idx - 1] and array[idx] - 1 != array[idx - 1]:
-            clear = True
-        idx += 1
-
-        if clear is True and temp_range:
-            temp_range = None
-    return largest
+    return max_range
 
 
 if __name__ == '__main__':
@@ -67,4 +67,4 @@ if __name__ == '__main__':
     c = [19, -1, 18, 17, 2, 10, 3, 12, 5, 16, 4, 11, 8, 7, 6, 15, 12, 12, 2, 1, 6, 13, 14]
 
     for i in (a, b, c):
-        print(largest_range_no_sort(i))
+        print(largest_range(i))
