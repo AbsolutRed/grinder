@@ -23,20 +23,16 @@ def max_sum_subarray(array):
 
 def kadanes_algo(array):
 
-    max_sum = float("-inf")
-
     if array:
-        current_sum = max_sum = array[0]
+        current_sum, max_sum = array[0], float("-inf")
+
         for item in array[1:]:
             current_sum = max(current_sum + item, item)
             max_sum = max(max_sum, current_sum)
-
-    return max_sum
+        return max_sum
 
 
 if __name__ == '__main__':
 
-    # a = [3, 5, -9, 1, 3, -2, 3, 4, 7, 2, -9, 6, 3, 1, -5, 4]
-    a = [-2, 1]
-    r = kadanes_algo(a)
-    print(r)
+    a = [3, 5, -9, 1, 3, -2, 3, 4, 7, 2, -9, 6, 3, 1, -5, 4]
+    print(kadanes_algo(a))
